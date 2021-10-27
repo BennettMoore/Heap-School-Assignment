@@ -11,6 +11,9 @@
 
 #define BLOCK_SIZE 5
 
+/*
+ * @brief A heap structure
+ */
 struct heap_s {
 	void * array;
 	size_t size;
@@ -19,13 +22,7 @@ struct heap_s {
 };
 
 /*
- * Creates a new Heap
- *
- * @param capacity the intial size of the heap
- * @param cmp_fun a pointer to a comparison function for the nodes
- * @param print_item a pointer to a function which correctly prints the value of a node
- *
- * @return A pointer to a new heap 
+ * @brief Creates a new Heap
  */
 Heap hdt_create(size_t capacity, int (*cmp_fun)(const void * lhs, const void * rhs), void (*print_item)(const void * item, FILE * outfp)){
 	Heap newHeap = malloc(sizeof(Heap));
@@ -37,10 +34,7 @@ Heap hdt_create(size_t capacity, int (*cmp_fun)(const void * lhs, const void * r
 }
 
 /*
- * Destroys a heap
- *
- * @param a_heap the heap to be destroyed
- *
+ * @brief Destroys a heap
  */
 void hdt_destroy(Heap a_heap){
 	free(a_heap->array);
@@ -48,22 +42,15 @@ void hdt_destroy(Heap a_heap){
 }
 
 /*
- * Returns the size of a heap
- *
- * @param a_heap the heap being measured
- *
- * @return the size of the provided heap
+ * @brief Returns the size of a heap
  */
 size_t hdt_size(Heap a_heap){
 	return a_heap->size;
 }
 
 /*
- * The main method
- *
- * @return whether the program ran successfully or not
+ * @brief Peeks at the top of the heap
  */
-int main(void){
-	
-	return 0;
+const void * hdt_top(const Heap a_heap){
+	return a_heap->array;
 }
