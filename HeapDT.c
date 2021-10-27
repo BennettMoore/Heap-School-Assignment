@@ -48,6 +48,17 @@ void hdt_destroy(Heap a_heap){
 }
 
 /*
+ * Returns the size of a heap
+ *
+ * @param a_heap the heap being measured
+ *
+ * @return the size of the provided heap
+ */
+size_t hdt_size(Heap a_heap){
+	return a_heap->size;
+}
+
+/*
  * The main method
  *
  * @return whether the program ran successfully or not
