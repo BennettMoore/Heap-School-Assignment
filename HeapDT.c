@@ -128,3 +128,12 @@ void * hdt_remove_top(Heap a_heap){
 	}
 	return top;
 }
+
+/*
+ * @brief Print all items in the heap
+ */
+void hdt_print(Heap a_heap, FILE * outfp){
+	for(size_t i = 0; i < a_heap->size; i++){
+		a_heap->print_node(a_heap->array[i], outfp);
+	}
+}
