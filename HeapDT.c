@@ -79,3 +79,52 @@ void hdt_insert_item(Heap a_heap, const void * item){
 	}
 	a_heap->size++;
 }
+
+/*
+ * @brief Pops the current root node
+ */
+void * hdt_remove_top(Heap a_heap){
+	void * top = malloc(sizeof(void*));
+	memcpy(top, a_heap->array[0], sizeof(void *));
+	a_heap->size--;
+
+	memcpy(a_heap->array[0], a_heap->array[a_heap->size], sizeof(void *));
+
+	if(a_heap->size == 0){ //If the heap has only 1 node left
+		return top;
+	}
+	for(size_t i = 0; i < a_heap->size; i++){ //Downsifting for removal
+		size_t lChild = 1 + i*2;
+		size_t rChild = 2 + i*2;
+		void * temp = malloc(sizeof(void*));
+
+		if(lChild >= a_heap->size){ //Leaf node
+			free(temp);
+			break;
+		}
+		else if(rChild >= a_heap->size || a_heap->compare(a_heap->array[rChild], a_heap->array[lChild]) != 0){ //Left child is more desirable or right child is empty
+			if(a_heap->compare(a_heap->array[i], a_heap->array[lChild]) != 0){ //Can swap with left child
+				memcpy(temp, a_heap->array[lChild], sizeof(void *));
+				memcpy(a_heap->array[lChild], a_heap->array[i], sizeof(void *));
+				memcpy(a_heap->array[i], temp, sizeof(void *));
+			}
+			else{
+				free(temp);
+				break;
+			}
+		}
+		else{ //Right child is more desirable
+			if(a_heap->compare(a_heap->array[i], a_heap->array[rChild]) != 0){ //Can swap with right child
+				memcpy(temp, a_heap->array[rChild], sizeof(void *));
+				memcpy(a_heap->array[rChild], a_heap->array[i], sizeof(void *));
+				memcpy(a_heap->array[i], temp, sizeof(void *));
+			}
+			else{
+				free(temp);
+				break;
+			}
+		}
+		free(temp);
+	}
+	return top;
+}
