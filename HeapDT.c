@@ -90,7 +90,7 @@ void hdt_insert_item(Heap a_heap, const void * item){
 	
 	for(size_t i = a_heap->size; i > 0; i--){ //Upsifting for insertion
 		size_t parent = (i-1)/2;
-		if(a_heap->compare(a_heap->array[parent], a_heap->array[i]) != 0){
+		if(a_heap->compare(a_heap->array[i], a_heap->array[parent]) != 0){
 			void * temp = malloc(ALLOC_BUF);
 			assert(temp != NULL); //Did malloc run
 
@@ -132,8 +132,8 @@ void * hdt_remove_top(Heap a_heap){
 			free(temp);
 			break;
 		}
-		else if(rChild >= a_heap->size || a_heap->compare(a_heap->array[rChild], a_heap->array[lChild]) != 0){ //Left child is more desirable or right child is empty
-			if(a_heap->compare(a_heap->array[i], a_heap->array[lChild]) != 0){ //Can swap with left child
+		else if(rChild >= a_heap->size || a_heap->compare(a_heap->array[lChild], a_heap->array[rChild]) != 0){ //Left child is more desirable or right child is empty
+			if(a_heap->compare(a_heap->array[lChild], a_heap->array[i]) != 0){ //Can swap with left child
 				memcpy(temp, a_heap->array[lChild], ALLOC_BUF);
 				memcpy(a_heap->array[lChild], a_heap->array[i], ALLOC_BUF);
 				memcpy(a_heap->array[i], temp, ALLOC_BUF);
@@ -144,7 +144,7 @@ void * hdt_remove_top(Heap a_heap){
 			}
 		}
 		else{ //Right child is more desirable
-			if(a_heap->compare(a_heap->array[i], a_heap->array[rChild]) != 0){ //Can swap with right child
+			if(a_heap->compare(a_heap->array[rChild], a_heap->array[i]) != 0){ //Can swap with right child
 				memcpy(temp, a_heap->array[rChild], ALLOC_BUF);
 				memcpy(a_heap->array[rChild], a_heap->array[i], ALLOC_BUF);
 				memcpy(a_heap->array[i], temp, ALLOC_BUF);
