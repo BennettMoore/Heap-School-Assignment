@@ -4,6 +4,7 @@
 // test_HeapDT.c is a simple test of a Heap abstract data type implementation.
 // 
 // @author CS @ RIT.EDU
+// @author Bennett Moore bwm7637@rit.edu
 // // // // // // // // // // // // // // // // // // // // // // // // 
 
 #include <assert.h>
@@ -133,7 +134,9 @@ void test_int_heap( bool max_flag ) {
 
     printf( "Emptying the heap: " );
     while ( hdt_size( theheap ) ) {
-        int value = *(int*)hdt_remove_top( theheap );
+        int* vPointer = (int*)hdt_remove_top(theheap);
+	int value = *vPointer;
+	free(vPointer);
         printf( "%d ", value );
     }
     printf( "\n" );
@@ -178,7 +181,9 @@ void test_char_heap( bool max_flag ) {
 
     printf( "Emptying the heap: " );
     while ( hdt_size( theheap ) ) {
-        char value = *(char*)hdt_remove_top( theheap );
+	char* vPointer = hdt_remove_top(theheap);
+        char value = *vPointer;
+	free(vPointer);
         printf( "%c ", value );
     }
     printf( "\n" );

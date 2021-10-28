@@ -29,7 +29,7 @@ Heap hdt_create(size_t capacity, int (*cmp_fun)(const void * lhs, const void * r
 	assert(cmp_fun != NULL && print_item != NULL); //Are function pointers valid
 
 	//Initialize new heap
-	Heap newHeap = malloc(sizeof(Heap));
+	Heap newHeap = malloc(sizeof(Heap)*sizeof(void**));
 	assert(newHeap != NULL); //Did malloc run
 
 	newHeap->array = (void **)calloc(capacity, sizeof(void *));
@@ -77,13 +77,16 @@ const void * hdt_top(const Heap a_heap){
 void hdt_insert_item(Heap a_heap, const void * item){
 	assert(a_heap != NULL); //Is a_heap valid
 
-	if(a_heap->size >= a_heap->max_size){ //Add a new layer to the heap
+	if(a_heap->size >= a_heap->max_size-1){ //Add a new layer to the heap
 		a_heap->max_size = 2*(a_heap->max_size)+2;
 		a_heap->array = (void **)realloc(a_heap->array, a_heap->max_size*sizeof(void *));
 		assert(a_heap->array != NULL); //Did realloc run
 	}
 	
-	memcpy(a_heap->array[a_heap->size], item, sizeof(&item)); //Set new node to the bottom of the heap
+	a_heap->array[a_heap->size] = malloc(sizeof(void *));
+	assert(a_heap->array[a_heap->size] != NULL); //Did malloc run
+
+	memcpy(a_heap->array[a_heap->size], item, sizeof(void *)); //Set new node to the bottom of the heap
 	
 	for(size_t i = a_heap->size; i > 0; i--){ //Upsifting for insertion
 		size_t parent = (i-1)/2;
@@ -114,6 +117,7 @@ void * hdt_remove_top(Heap a_heap){
 	
 	a_heap->size--; //Index of leaf node being moved to the root
 	memcpy(a_heap->array[0], a_heap->array[a_heap->size], sizeof(void *)); //Replace root node with bottom leaf node
+	free(a_heap->array[a_heap->size]); //Remove bottom leaf node
 
 	if(a_heap->size == 0){ //If the heap has only 1 node left
 		return top;
