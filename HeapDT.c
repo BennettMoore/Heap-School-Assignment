@@ -11,6 +11,7 @@
 #include <assert.h>
 #include "HeapDT.h"
 
+#define ALLOC_BUF 50
 /*
  * @brief A heap structure
  */
@@ -32,7 +33,7 @@ Heap hdt_create(size_t capacity, int (*cmp_fun)(const void * lhs, const void * r
 	Heap newHeap = malloc(sizeof(Heap)*sizeof(void**));
 	assert(newHeap != NULL); //Did malloc run
 
-	newHeap->array = (void **)calloc(capacity, sizeof(void *));
+	newHeap->array = (void **)calloc(capacity, sizeof(void*));
 	assert(newHeap->array != NULL); //Did calloc run
 	
 	newHeap->max_size = capacity;
@@ -79,24 +80,23 @@ void hdt_insert_item(Heap a_heap, const void * item){
 
 	if(a_heap->size >= a_heap->max_size-1){ //Add a new layer to the heap
 		a_heap->max_size = 2*(a_heap->max_size)+2;
-		a_heap->array = (void **)realloc(a_heap->array, a_heap->max_size*sizeof(void *));
+		a_heap->array = (void **)realloc(a_heap->array, a_heap->max_size*sizeof(void*));
 		assert(a_heap->array != NULL); //Did realloc run
 	}
-	size_t alloc_size = sizeof(item);
-	a_heap->array[a_heap->size] = malloc(alloc_size);
+	a_heap->array[a_heap->size] = malloc(ALLOC_BUF);
 	assert(a_heap->array[a_heap->size] != NULL); //Did malloc run
 
-	memcpy(a_heap->array[a_heap->size], item, alloc_size); //Set new node to the bottom of the heap
+	memcpy(a_heap->array[a_heap->size], item, ALLOC_BUF); //Set new node to the bottom of the heap
 	
 	for(size_t i = a_heap->size; i > 0; i--){ //Upsifting for insertion
 		size_t parent = (i-1)/2;
 		if(a_heap->compare(a_heap->array[i], a_heap->array[parent]) != 0){
-			void * temp = malloc(sizeof(void*));
+			void * temp = malloc(ALLOC_BUF);
 			assert(temp != NULL); //Did malloc run
 
-			memcpy(temp, a_heap->array[parent], sizeof(void *));
-			memcpy(a_heap->array[parent], a_heap->array[i], sizeof(void *));
-			memcpy(a_heap->array[i], temp, sizeof(void *));
+			memcpy(temp, a_heap->array[parent], ALLOC_BUF);
+			memcpy(a_heap->array[parent], a_heap->array[i], ALLOC_BUF);
+			memcpy(a_heap->array[i], temp, ALLOC_BUF);
 			free(temp);
 		}
 	}
@@ -110,13 +110,13 @@ void * hdt_remove_top(Heap a_heap){
 	assert(a_heap != NULL); //Is a_heap valid
 	assert(a_heap->size > 0); //Does a_heap have at least one node
 	
-	void * top = malloc(sizeof(void*));
+	void * top = malloc(ALLOC_BUF);
 	assert(top != NULL); //Did malloc run
 
-	memcpy(top, a_heap->array[0], sizeof(void *)); //Save root node to return later
+	memcpy(top, a_heap->array[0], ALLOC_BUF); //Save root node to return later
 	
 	a_heap->size--; //Index of leaf node being moved to the root
-	memcpy(a_heap->array[0], a_heap->array[a_heap->size], sizeof(void *)); //Replace root node with bottom leaf node
+	memcpy(a_heap->array[0], a_heap->array[a_heap->size], ALLOC_BUF); //Replace root node with bottom leaf node
 	free(a_heap->array[a_heap->size]); //Remove bottom leaf node
 
 	if(a_heap->size == 0){ //If the heap has only 1 node left
@@ -125,7 +125,7 @@ void * hdt_remove_top(Heap a_heap){
 	for(size_t i = 0; i < a_heap->size; i++){ //Downsifting for removal
 		size_t lChild = 1 + i*2;
 		size_t rChild = 2 + i*2;
-		void * temp = malloc(sizeof(void*));
+		void * temp = malloc(ALLOC_BUF);
 		assert(temp != NULL); //Did malloc run
 
 		if(lChild >= a_heap->size){ //Leaf node
@@ -134,9 +134,9 @@ void * hdt_remove_top(Heap a_heap){
 		}
 		else if(rChild >= a_heap->size || a_heap->compare(a_heap->array[lChild], a_heap->array[rChild]) != 0){ //Left child is more desirable or right child is empty
 			if(a_heap->compare(a_heap->array[lChild], a_heap->array[i]) != 0){ //Can swap with left child
-				memcpy(temp, a_heap->array[lChild], sizeof(void *));
-				memcpy(a_heap->array[lChild], a_heap->array[i], sizeof(void *));
-				memcpy(a_heap->array[i], temp, sizeof(void *));
+				memcpy(temp, a_heap->array[lChild], ALLOC_BUF);
+				memcpy(a_heap->array[lChild], a_heap->array[i], ALLOC_BUF);
+				memcpy(a_heap->array[i], temp, ALLOC_BUF);
 			}
 			else{ //Can't swap with children
 				free(temp);
@@ -145,9 +145,9 @@ void * hdt_remove_top(Heap a_heap){
 		}
 		else{ //Right child is more desirable
 			if(a_heap->compare(a_heap->array[rChild], a_heap->array[i]) != 0){ //Can swap with right child
-				memcpy(temp, a_heap->array[rChild], sizeof(void *));
-				memcpy(a_heap->array[rChild], a_heap->array[i], sizeof(void *));
-				memcpy(a_heap->array[i], temp, sizeof(void *));
+				memcpy(temp, a_heap->array[rChild], ALLOC_BUF);
+				memcpy(a_heap->array[rChild], a_heap->array[i], ALLOC_BUF);
+				memcpy(a_heap->array[i], temp, ALLOC_BUF);
 			}
 			else{ //Can't swap with children
 				free(temp);
