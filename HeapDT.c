@@ -82,11 +82,11 @@ void hdt_insert_item(Heap a_heap, const void * item){
 		a_heap->array = (void **)realloc(a_heap->array, a_heap->max_size*sizeof(void *));
 		assert(a_heap->array != NULL); //Did realloc run
 	}
-	
-	a_heap->array[a_heap->size] = malloc(sizeof(void *));
+	size_t alloc_size = sizeof(item);
+	a_heap->array[a_heap->size] = malloc(alloc_size);
 	assert(a_heap->array[a_heap->size] != NULL); //Did malloc run
 
-	memcpy(a_heap->array[a_heap->size], item, sizeof(void *)); //Set new node to the bottom of the heap
+	memcpy(a_heap->array[a_heap->size], item, alloc_size); //Set new node to the bottom of the heap
 	
 	for(size_t i = a_heap->size; i > 0; i--){ //Upsifting for insertion
 		size_t parent = (i-1)/2;
